@@ -92,13 +92,22 @@ if [[ "$BUILD_IOS" != "1" ]]; then
 else
   find ../patches/jre_${TARGET_VERSION}/ios -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply --reject --whitespace=fix {} || (echo "git apply failed (iOs patch set)" && exit 1)' 
 
+# Apply patches
+git reset --hard
+if [[ "$BUILD_IOS" != "1" ]]; then
+  echo "Skipping Android patches for Java 25"
+else
+  echo "Skipping iOS patches for Java 25 (applying raw build)"
+  
+  # Закомментировано: git apply для iOS патчей отключен
+  # find ../patches/jre_${TARGET_VERSION}/ios -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply --reject --whitespace=fix {} || (echo "git apply failed (iOs patch set)" && exit 1)' 
+
   # Hack: exclude building macOS stuff
   desktop_mac=src/java.desktop/macosx
   mv ${desktop_mac} ${desktop_mac}_NOTIOS
   mkdir -p ${desktop_mac}/native
   mv ${desktop_mac}_NOTIOS/native/libjsound ${desktop_mac}/native/
 fi
-
 # rm -rf build
 
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
