@@ -91,16 +91,13 @@ if [[ "$BUILD_IOS" != "1" ]]; then
   find ../patches/jre_${TARGET_VERSION}/android -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply  --reject --whitespace=fix {} || (echo "git apply failed (Android patch set)" && exit 1)' 
 else
   find ../patches/jre_${TARGET_VERSION}/ios -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply --reject --whitespace=fix {} || (echo "git apply failed (iOs patch set)" && exit 1)' 
-
 # Apply patches
 git reset --hard
 if [[ "$BUILD_IOS" != "1" ]]; then
-  echo "Skipping Android patches for Java 25"
+  find ../patches/jre_${TARGET_VERSION}/android -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply  --reject --whitespace=fix {} || (echo "git apply failed (Android patch set)" && exit 1)' 
 else
-  echo "Skipping iOS patches for Java 25 (applying raw build)"
-  
-  # Закомментировано: git apply для iOS патчей отключен
-  # find ../patches/jre_${TARGET_VERSION}/ios -name "*.diff" -print0 | xargs -0 -I {} sh -c 'echo "Applying {}" && git apply --reject --whitespace=fix {} || (echo "git apply failed (iOs patch set)" && exit 1)' 
+  # iOS патчи пропущены для эксперимента с Java 25
+  echo "Skipping iOS patches"
 
   # Hack: exclude building macOS stuff
   desktop_mac=src/java.desktop/macosx
